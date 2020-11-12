@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -16,9 +17,12 @@ namespace Frogger
 
         int speed = 7;
 
-        int enemySpeed = 5;
+        int enemySpeed = 3;
+
+        int score = 0;
 
         PictureBox[] enemies = new PictureBox[23];
+        List<PictureBox> collectables = new List<PictureBox>();
 
         int[] speeds = new int[23];
 
@@ -50,9 +54,21 @@ namespace Frogger
             }
         }
 
+        private void ScoreTimer_Tick(object sender, EventArgs e)
+        {
+            ScoreTimer.Start();
+            score++;
+            txtTimer.Text = "Time: " + score.ToString();
+        }
+
+        private void restartButton_Click(object sender, EventArgs e)
+        {
+            RestartGame();
+        }
+
         private void MainGameTimerEvent(object sender, EventArgs e)
         {
-            if(goLeft)
+            if (goLeft)
             {
                 player.Left -= speed;
             }
@@ -78,6 +94,22 @@ namespace Frogger
                         if(player.Bounds.IntersectsWith(x.Bounds))
                             RestartGame();
                     }
+
+                    if (x.Name == "finishLine")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            gameTimer.Stop();
+                            ScoreTimer.Stop();
+                            Spawner.Stop();
+
+                            player.Visible = false;
+                            winLabel.Visible = true;
+                            restartButton.Visible = true;
+
+                            winLabel.Text += "You won!" + Environment.NewLine + "Score: " + score;
+                        }
+                    }
                 }
             }
 
@@ -91,6 +123,12 @@ namespace Frogger
                     speeds[i] = -speeds[i];
                 }
             }
+        }
+
+        private void Spawner_Tick(object sender, EventArgs e)
+        {
+            Spawner.Start();
+            SpawnCollectable();
         }
 
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -112,6 +150,8 @@ namespace Frogger
                 goRight = true;
             }
         }
+
+
 
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
@@ -144,10 +184,52 @@ namespace Frogger
             goLeft = false;
             goRight = false;
 
+            winLabel.Visible = false;
+            restartButton.Visible = false;
+            player.Visible = true;
+
             player.Left = 220;
             player.Top = 570;
 
+            score = 0;
+
+            foreach(var c in collectables)
+            {
+                this.Controls.Remove(c);
+            }
+            
+            Spawner.Start();
+            ScoreTimer.Start();
             gameTimer.Start();
+        }
+
+        private void SpawnCollectable()
+        {
+            Random random = new Random();
+
+            int randomNum = random.Next(0,2);
+
+            PictureBox pictureBox = new PictureBox();
+
+            if (randomNum == 0)
+            {
+                pictureBox.BackColor = Color.Black;
+                pictureBox.Tag = "slowTime";
+            }
+            else
+            {
+                pictureBox.BackColor = Color.Blue;
+                pictureBox.Tag = "decreaseScore";
+            }
+
+            pictureBox.Location = new Point(random.Next(50, 400), random.Next(2, 9) * 53);
+            pictureBox.Height = 30;
+            pictureBox.Width = 20;
+
+            this.Controls.Add(pictureBox);
+            pictureBox.BringToFront();
+            collectables.Add(pictureBox);
+            
         }
     }
 }
