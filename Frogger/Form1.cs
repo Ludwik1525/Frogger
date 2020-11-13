@@ -18,13 +18,18 @@ namespace Frogger
         int speed = 7;
 
         int enemySpeed = 3;
+        int leafSpeed = 2;
 
-        int score = 0;
+        int score = 100;
 
-        PictureBox[] enemies = new PictureBox[23];
+        bool onLeaf = false, wasDelayed = false;
+
+        string rotation = "up";
+
+        PictureBox[] movableObjs = new PictureBox[35];
         List<PictureBox> collectables = new List<PictureBox>();
 
-        int[] speeds = new int[23];
+        int[] speeds = new int[35];
 
         public Form1()
         {
@@ -34,9 +39,9 @@ namespace Frogger
 
             foreach (Control x in this.Controls)
             {
-                if ((string)x.Tag == "enemy")
+                if (x.Name.Contains("enemy") || x.Name.Contains("leaf"))
                 {
-                    enemies[i] = (PictureBox)x;
+                    movableObjs[i] = (PictureBox)x;
                     i++;
                 }
             }
@@ -45,11 +50,27 @@ namespace Frogger
             {
                 if(j%2 == 0)
                 {
-                    speeds[j] = enemySpeed;
+                    if ((string)movableObjs[j].Tag == "enemy")
+                    {
+                        speeds[j] = enemySpeed;
+                    }
+                    else
+                    {
+                        speeds[j] = leafSpeed;
+                    }
+                    movableObjs[j].Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    movableObjs[j].Refresh();
                 }
                 else
                 {
-                    speeds[j] = -enemySpeed;
+                    if ((string)movableObjs[j].Tag == "enemy")
+                    {
+                        speeds[j] = -enemySpeed;
+                    }
+                    else
+                    {
+                        speeds[j] = -leafSpeed;
+                    }
                 }
             }
         }
@@ -57,8 +78,11 @@ namespace Frogger
         private void ScoreTimer_Tick(object sender, EventArgs e)
         {
             ScoreTimer.Start();
-            score++;
-            txtTimer.Text = "Time: " + score.ToString();
+            if (score > 1)
+            {
+                score--;
+                txtTimer.Text = "Score: " + score.ToString();
+            }
         }
 
         private void restartButton_Click(object sender, EventArgs e)
@@ -91,8 +115,59 @@ namespace Frogger
                 {
                     if ((string)x.Tag == "enemy")
                     {
-                        if(player.Bounds.IntersectsWith(x.Bounds))
+                        if (player.Bounds.IntersectsWith(x.Bounds))
                             RestartGame();
+                    }
+
+                    if ((string)x.Tag == "leaf")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            if (!onLeaf)
+                            {
+                                Console.WriteLine("I'M ON A LEAF");
+                                onLeaf = true;
+                                wasDelayed = false;
+                                Wait();
+                            }
+                        }
+                        else
+                        {
+                            if (onLeaf)
+                            {
+                                if (wasDelayed)
+                                {
+                                    Console.WriteLine("I'M NOT ON A LEAF");
+                                    onLeaf = false;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!onLeaf)
+                    {
+                        if ((string)x.Tag == "water")
+                        {
+                            if (player.Bounds.IntersectsWith(x.Bounds))
+                            {
+                                RestartGame();
+                            }
+                        }
+                    }
+
+                    if (x.Name == "borderLeft")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                            goLeft = false;
+                    }
+                    if (x.Name == "borderRight")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                            goRight = false;
+                    }
+                    if (x.Name == "borderBottom")
+                    {if (player.Bounds.IntersectsWith(x.Bounds))
+                        goDown = false;
                     }
 
                     if (x.Name == "finishLine")
@@ -113,14 +188,17 @@ namespace Frogger
                 }
             }
 
-
-            for (int i = 0; i < enemies.Length; i++)
+            for (int i = 0; i < movableObjs.Length; i++)
             {
-                enemies[i].Left -= speeds[i];
+                movableObjs[i].Left -= speeds[i];
 
-                if (enemies[i].Left < 0 || enemies[i].Left + enemies[i].Width > this.ClientSize.Width)
+                if (movableObjs[i].Left + movableObjs[i].Width < 0)
                 {
-                    speeds[i] = -speeds[i];
+                    movableObjs[i].Left = this.ClientSize.Width;
+                }
+                if (movableObjs[i].Left > this.ClientSize.Width)
+                {
+                    movableObjs[i].Left = -movableObjs[i].Width;
                 }
             }
         }
@@ -133,41 +211,109 @@ namespace Frogger
 
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Down)
+            if(e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
             {
-                goDown = true;
+                if(player.Top < this.ClientSize.Height - 3/2 * player.Height)
+                    goDown = true;
+
+                switch(rotation)
+                {
+                    case "up":
+                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case "down":
+                        break;
+                    case "left":
+                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                    case "right":
+                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                }
+                player.Refresh();
+                rotation = "down";
             }
-            if (e.KeyCode == Keys.Up)
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
             {
                 goUp = true;
+                switch (rotation)
+                {
+                    case "up":
+                        break;
+                    case "down":
+                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case "left":
+                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case "right":
+                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                }
+                player.Refresh();
+                rotation = "up";
             }
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
             {
-                goLeft = true;
+                if (player.Left > player.Width)
+                    goLeft = true;
+
+                switch (rotation)
+                {
+                    case "up":
+                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                    case "down":
+                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case "left":
+                        break;
+                    case "right":
+                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                }
+                player.Refresh();
+                rotation = "left";
             }
-            if (e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
             {
-                goRight = true;
+                if(player.Left < this.ClientSize.Width - player.Width)
+                    goRight = true;
+
+                switch (rotation)
+                {
+                    case "up":
+                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+                    case "down":
+                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+                    case "left":
+                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                    case "right":
+                        break;
+                }
+                player.Refresh();
+                rotation = "right";
             }
         }
 
-
-
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
             {
                 goDown = false;
             }
-            if (e.KeyCode == Keys.Up)
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
             {
                 goUp = false;
             }
-            if (e.KeyCode == Keys.Left)
+            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
             {
                 goLeft = false;
             }
-            if (e.KeyCode == Keys.Right)
+            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
             {
                 goRight = false;
             }
@@ -188,12 +334,12 @@ namespace Frogger
             restartButton.Visible = false;
             player.Visible = true;
 
-            player.Left = 220;
-            player.Top = 570;
+            player.Left = this.ClientSize.Width / 2;
+            player.Top = this.ClientSize.Height - 33;
 
-            score = 0;
+            score = 100;
 
-            foreach(var c in collectables)
+            foreach (var c in collectables)
             {
                 this.Controls.Remove(c);
             }
@@ -230,6 +376,12 @@ namespace Frogger
             pictureBox.BringToFront();
             collectables.Add(pictureBox);
             
+        }
+
+        public async void Wait()
+        {
+            await Task.Delay(500);
+            wasDelayed = true;
         }
     }
 }
