@@ -83,6 +83,10 @@ namespace Frogger
                 score--;
                 txtTimer.Text = "Score: " + score.ToString();
             }
+            else
+            {
+                RestartGame();
+            }
         }
 
         private void restartButton_Click(object sender, EventArgs e)
@@ -90,7 +94,7 @@ namespace Frogger
             RestartGame();
         }
 
-        private void MainGameTimerEvent(object sender, EventArgs e)
+        private async void MainGameTimerEvent(object sender, EventArgs e)
         {
             if (goLeft)
             {
@@ -168,6 +172,26 @@ namespace Frogger
                     if (x.Name == "borderBottom")
                     {if (player.Bounds.IntersectsWith(x.Bounds))
                         goDown = false;
+                    }
+
+                    if ((string)x.Tag == "slowTime")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            this.Controls.Remove(x);
+                            gameTimer.Interval = 100;
+                            await Task.Delay(4000);
+                            gameTimer.Interval = 20;
+                        }  
+                    }
+
+                    if ((string)x.Tag == "addToScore")
+                    {
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            this.Controls.Remove(x);
+                            score += 5;
+                        }
                     }
 
                     if (x.Name == "finishLine")
@@ -343,13 +367,14 @@ namespace Frogger
             {
                 this.Controls.Remove(c);
             }
-            
+
+            gameTimer.Interval = 20;
             Spawner.Start();
             ScoreTimer.Start();
             gameTimer.Start();
         }
 
-        private void SpawnCollectable()
+        private async void SpawnCollectable()
         {
             Random random = new Random();
 
@@ -359,23 +384,27 @@ namespace Frogger
 
             if (randomNum == 0)
             {
-                pictureBox.BackColor = Color.Black;
+                pictureBox.ImageLocation = "../../Properties/Fly.png";
+                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                 pictureBox.Tag = "slowTime";
             }
             else
             {
-                pictureBox.BackColor = Color.Blue;
-                pictureBox.Tag = "decreaseScore";
+                pictureBox.ImageLocation = "../../Properties/Worm.jpg";
+                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+                pictureBox.Tag = "addToScore";
             }
 
-            pictureBox.Location = new Point(random.Next(50, 400), random.Next(2, 9) * 53);
+            pictureBox.Location = new Point(random.Next(50, 400), random.Next(1, 8) * 53);
             pictureBox.Height = 30;
             pictureBox.Width = 20;
 
             this.Controls.Add(pictureBox);
             pictureBox.BringToFront();
             collectables.Add(pictureBox);
-            
+
+            await Task.Delay(7000);
+            this.Controls.Remove(pictureBox);
         }
 
         public async void Wait()
@@ -383,5 +412,6 @@ namespace Frogger
             await Task.Delay(500);
             wasDelayed = true;
         }
+
     }
 }
