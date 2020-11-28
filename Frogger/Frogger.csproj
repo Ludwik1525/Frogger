@@ -49,16 +49,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Food.cs" />
+    <Compile Include="GameManager.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="GameManager.Designer.cs">
+      <DependentUpon>GameManager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Frog.cs" />
+    <Compile Include="FrogDirection.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="GameManager.resx">
+      <DependentUpon>GameManager.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -85,6 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\Fly2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Frogg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

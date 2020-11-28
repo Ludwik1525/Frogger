@@ -16,7 +16,11 @@ namespace Frogger
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new GameManager());
+
+            GameManager gm = new GameManager();
+            gm.Show(); 
+            gm.GameLoop();
         }
     }
 }

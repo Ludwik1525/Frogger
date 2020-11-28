@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -11,12 +12,8 @@ using System.Windows.Forms;
 
 namespace Frogger
 {
-    public partial class Form1 : Form
+    public partial class GameManager : Form
     {
-        bool goUp, goDown, goLeft, goRight, isGameOver;
-
-        int speed = 7;
-
         int enemySpeed = 3;
         int leafSpeed = 2;
 
@@ -24,55 +21,62 @@ namespace Frogger
 
         bool onLeaf = false, wasDelayed = false;
 
-        string rotation = "up";
 
         PictureBox[] movableObjs = new PictureBox[35];
         List<PictureBox> collectables = new List<PictureBox>();
 
         int[] speeds = new int[35];
 
-        public Form1()
+        Frog frog;
+
+
+        public GameManager()
         {
             InitializeComponent();
+            frog = new Frog(this.ClientSize.Width, this.ClientSize.Height, player);
+            
+        }
 
-            int i = 0;
-
-            foreach (Control x in this.Controls)
+        public void GameLoop()
+        {
+            Console.WriteLine("game loop");
+            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
+            Stopwatch stopWatch = Stopwatch.StartNew();
+            TimeSpan previous = stopWatch.Elapsed;
+            TimeSpan lag = new TimeSpan(0);
+            while (true)
             {
-                if (x.Name.Contains("enemy") || x.Name.Contains("leaf"))
-                {
-                    movableObjs[i] = (PictureBox)x;
-                    i++;
-                }
-            }
+                TimeSpan current = stopWatch.Elapsed;
+                TimeSpan elapsed = current - previous;
+                previous = current;
+                lag += elapsed;
 
-            for(int j = 0; j < speeds.Length; j++)
-            {
-                if(j%2 == 0)
+                //Fixed timestep for logics, varying for rendering
+                while (lag >= MS_PER_FRAME)
                 {
-                    if ((string)movableObjs[j].Tag == "enemy")
-                    {
-                        speeds[j] = enemySpeed;
-                    }
-                    else
-                    {
-                        speeds[j] = leafSpeed;
-                    }
-                    movableObjs[j].Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    movableObjs[j].Refresh();
+                    UpdateGameLogic();
+
+                    lag -= MS_PER_FRAME;
                 }
-                else
-                {
-                    if ((string)movableObjs[j].Tag == "enemy")
-                    {
-                        speeds[j] = -enemySpeed;
-                    }
-                    else
-                    {
-                        speeds[j] = -leafSpeed;
-                    }
-                }
+
+                //To utilize the GameLoop using Windows Forms, tell the application to do the events
+                // Refresh();
+                Application.DoEvents();
             }
+        }
+
+        private void ProcessInput(object sender, KeyEventArgs e)
+        {
+            //Input events here
+            frog.Rotate(e);
+            frog.ChangeDirection(e);
+            
+        }
+
+        private void UpdateGameLogic()
+        {
+            //Game Logic changes here
+            frog.Move();
         }
 
         private void ScoreTimer_Tick(object sender, EventArgs e)
@@ -96,22 +100,6 @@ namespace Frogger
 
         private async void MainGameTimerEvent(object sender, EventArgs e)
         {
-            if (goLeft)
-            {
-                player.Left -= speed;
-            }
-            if (goRight)
-            {
-                player.Left += speed;
-            }
-            if (goUp)
-            {
-                player.Top -= speed;
-            }
-            if (goDown)
-            {
-                player.Top += speed;
-            }
 
             foreach (Control x in this.Controls)
             {
@@ -159,20 +147,6 @@ namespace Frogger
                         }
                     }
 
-                    if (x.Name == "borderLeft")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                            goLeft = false;
-                    }
-                    if (x.Name == "borderRight")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                            goRight = false;
-                    }
-                    if (x.Name == "borderBottom")
-                    {if (player.Bounds.IntersectsWith(x.Bounds))
-                        goDown = false;
-                    }
 
                     if ((string)x.Tag == "slowTime")
                     {
@@ -182,7 +156,7 @@ namespace Frogger
                             gameTimer.Interval = 100;
                             await Task.Delay(4000);
                             gameTimer.Interval = 20;
-                        }  
+                        }
                     }
 
                     if ((string)x.Tag == "addToScore")
@@ -233,127 +207,10 @@ namespace Frogger
             SpawnCollectable();
         }
 
-        private void KeyIsDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
-            {
-                if(player.Top < this.ClientSize.Height - 3/2 * player.Height)
-                    goDown = true;
 
-                switch(rotation)
-                {
-                    case "up":
-                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                    case "down":
-                        break;
-                    case "left":
-                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case "right":
-                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                }
-                player.Refresh();
-                rotation = "down";
-            }
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
-            {
-                goUp = true;
-                switch (rotation)
-                {
-                    case "up":
-                        break;
-                    case "down":
-                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                    case "left":
-                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case "right":
-                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                }
-                player.Refresh();
-                rotation = "up";
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
-            {
-                if (player.Left > player.Width)
-                    goLeft = true;
-
-                switch (rotation)
-                {
-                    case "up":
-                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case "down":
-                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case "left":
-                        break;
-                    case "right":
-                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                }
-                player.Refresh();
-                rotation = "left";
-            }
-            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
-            {
-                if(player.Left < this.ClientSize.Width - player.Width)
-                    goRight = true;
-
-                switch (rotation)
-                {
-                    case "up":
-                        player.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case "down":
-                        player.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case "left":
-                        player.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                    case "right":
-                        break;
-                }
-                player.Refresh();
-                rotation = "right";
-            }
-        }
-
-        private void KeyIsUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
-            {
-                goDown = false;
-            }
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
-            {
-                goUp = false;
-            }
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
-            {
-                goLeft = false;
-            }
-            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
-            {
-                goRight = false;
-            }
-            if (e.KeyCode == Keys.Escape && isGameOver)
-            {
-                RestartGame();
-            }
-        }
 
         private void RestartGame()
         {
-            goUp = false;
-            goDown = false;
-            goLeft = false;
-            goRight = false;
-
             winLabel.Visible = false;
             restartButton.Visible = false;
             player.Visible = true;
@@ -378,7 +235,7 @@ namespace Frogger
         {
             Random random = new Random();
 
-            int randomNum = random.Next(0,2);
+            int randomNum = random.Next(0, 2);
 
             PictureBox pictureBox = new PictureBox();
 
@@ -405,6 +262,49 @@ namespace Frogger
 
             await Task.Delay(7000);
             this.Controls.Remove(pictureBox);
+        }
+
+        private void GameManager_Load(object sender, EventArgs e)
+        {
+            int i = 0;
+
+            foreach (Control x in this.Controls)
+            {
+                if (x.Name.Contains("enemy") || x.Name.Contains("leaf"))
+                {
+                    movableObjs[i] = (PictureBox)x;
+                    i++;
+                }
+            }
+
+            for (int j = 0; j < speeds.Length; j++)
+            {
+                if (j % 2 == 0)
+                {
+                    if ((string)movableObjs[j].Tag == "enemy")
+                    {
+                        speeds[j] = enemySpeed;
+                    }
+                    else
+                    {
+                        speeds[j] = leafSpeed;
+                    }
+                    movableObjs[j].Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    movableObjs[j].Refresh();
+                }
+                else
+                {
+                    if ((string)movableObjs[j].Tag == "enemy")
+                    {
+                        speeds[j] = -enemySpeed;
+                    }
+                    else
+                    {
+                        speeds[j] = -leafSpeed;
+                    }
+                }
+            }
+            
         }
 
         public async void Wait()
