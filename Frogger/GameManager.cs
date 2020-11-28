@@ -40,7 +40,7 @@ namespace Frogger
         public void GameLoop()
         {
             Console.WriteLine("game loop");
-            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
+            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 1000.0);
             Stopwatch stopWatch = Stopwatch.StartNew();
             TimeSpan previous = stopWatch.Elapsed;
             TimeSpan lag = new TimeSpan(0);

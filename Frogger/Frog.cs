@@ -12,7 +12,7 @@ namespace Frogger
     {
         PictureBox _playerFrog;
 
-        int speed = 15;
+        int speed = 10;
 
         readonly int posX;
         readonly int posY;

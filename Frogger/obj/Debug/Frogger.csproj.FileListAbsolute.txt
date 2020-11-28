@@ -21,10 +21,10 @@ C:\Users\mmich\Desktop\Frogger\Frogger\bin\Debug\Frogger.exe.config
 C:\Users\mmich\Desktop\Frogger\Frogger\bin\Debug\Frogger.exe
 C:\Users\mmich\Desktop\Frogger\Frogger\bin\Debug\Frogger.pdb
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.csprojAssemblyReference.cache
-C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.Form1.resources
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.Properties.Resources.resources
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.csproj.GenerateResource.cache
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.csproj.CoreCompileInputs.cache
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.exe
 C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.pdb
 C:\Users\lukas\Documents\GitHub\Frogger\Frogger\obj\Debug\Frogger.GameManager.resources
+C:\Users\mmich\Desktop\Frogger\Frogger\obj\Debug\Frogger.GameManager.resources
