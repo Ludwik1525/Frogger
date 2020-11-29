@@ -89,13 +89,13 @@ namespace Frogger
                 switch (frogDirection.GetCurrentDirection())
                 {
                     case FrogDirection.Direction.Up:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
                         break;
                     case FrogDirection.Direction.Left:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
                         break;
                     case FrogDirection.Direction.Right:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                         break;
                 }
             }
@@ -105,13 +105,13 @@ namespace Frogger
                 switch (frogDirection.GetCurrentDirection())
                 {
                     case FrogDirection.Direction.Down:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
                         break;
                     case FrogDirection.Direction.Left:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                         break;
                     case FrogDirection.Direction.Right:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
                         break;
                 }
             }
@@ -121,13 +121,13 @@ namespace Frogger
                 switch (frogDirection.GetCurrentDirection())
                 {
                     case FrogDirection.Direction.Up:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
                         break;
                     case FrogDirection.Direction.Down:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                         break;
                     case FrogDirection.Direction.Right:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
                         break;
                 }
             }
@@ -137,13 +137,13 @@ namespace Frogger
                 switch (frogDirection.GetCurrentDirection())
                 {
                     case FrogDirection.Direction.Up:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                         break;
                     case FrogDirection.Direction.Down:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
                         break;
                     case FrogDirection.Direction.Left:
-                        _playerFrog.Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
                         break;
                 }
             }

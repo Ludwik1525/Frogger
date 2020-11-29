@@ -204,7 +204,7 @@ namespace Frogger
         private void Spawner_Tick(object sender, EventArgs e)
         {
             Spawner.Start();
-            SpawnCollectable();
+            SpawnCollectible();
         }
 
 
@@ -231,7 +231,7 @@ namespace Frogger
             gameTimer.Start();
         }
 
-        private async void SpawnCollectable()
+        private async void SpawnCollectible()
         {
             Random random = new Random();
 
@@ -241,13 +241,13 @@ namespace Frogger
 
             if (randomNum == 0)
             {
-                pictureBox.ImageLocation = "../../Properties/Fly.png";
+                pictureBox.ImageLocation = "../../Resources/Fly.png";
                 pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                 pictureBox.Tag = "slowTime";
             }
             else
             {
-                pictureBox.ImageLocation = "../../Properties/Worm.jpg";
+                pictureBox.ImageLocation = "../../Resources/Worm.png";
                 pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
                 pictureBox.Tag = "addToScore";
             }
@@ -289,7 +289,7 @@ namespace Frogger
                     {
                         speeds[j] = leafSpeed;
                     }
-                    movableObjs[j].Image.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                    movableObjs[j].BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
                     movableObjs[j].Refresh();
                 }
                 else
