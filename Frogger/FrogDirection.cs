@@ -24,7 +24,6 @@ namespace Frogger
             this.currentDirection = currentDirection;
         }
 
-
         public Direction GetCurrentDirection()
         {
             return currentDirection;
@@ -73,11 +72,6 @@ namespace Frogger
         public void StopMoving()
         {
             ChangeGameState(GameState.NotMoving);
-        }
-
-        public void Finish()
-        {
-            ChangeGameState(GameState.Over);
         }
     }
 }

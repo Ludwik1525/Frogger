@@ -12,7 +12,7 @@ namespace Frogger
     {
         PictureBox _playerFrog;
 
-        int speed = 10;
+        int speed = 15;
 
         readonly int posX;
         readonly int posY;
@@ -31,25 +31,25 @@ namespace Frogger
 
             this.screenWidth = posX;
             this.screenHeight = posY;
-
+            frogDirection.StopMoving();
         }
 
-        public void ChangeDirection(KeyEventArgs e)
+        public void MoveTheFrog(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
+            if (frogDirection.GetCurrentGameState() == GameState.NotMoving)
+            {
+                if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
                 frogDirection.MoveUp();
 
-            else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
+                else if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
                 frogDirection.MoveDown();
 
-            else if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
+                else if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
                 frogDirection.MoveRight();
 
-            else if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
+                else if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
                 frogDirection.MoveLeft();
 
-            if(GameState.NotMoving == frogDirection.GetCurrentGameState())
-            {
                 frogDirection.StartMoving();
             }
         }
@@ -84,71 +84,74 @@ namespace Frogger
 
         public void Rotate(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
+            if (frogDirection.GetCurrentGameState() != GameState.Moving)
             {
-                switch (frogDirection.GetCurrentDirection())
+                if (e.KeyCode == Keys.Down || e.KeyCode == Keys.S)
                 {
-                    case FrogDirection.Direction.Up:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                    case FrogDirection.Direction.Left:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case FrogDirection.Direction.Right:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
+                    switch (frogDirection.GetCurrentDirection())
+                    {
+                        case FrogDirection.Direction.Up:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                        case FrogDirection.Direction.Left:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                        case FrogDirection.Direction.Right:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                    }
                 }
-            }
 
-            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
-            {
-                switch (frogDirection.GetCurrentDirection())
+                if (e.KeyCode == Keys.Up || e.KeyCode == Keys.W)
                 {
-                    case FrogDirection.Direction.Down:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
-                    case FrogDirection.Direction.Left:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case FrogDirection.Direction.Right:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
+                    switch (frogDirection.GetCurrentDirection())
+                    {
+                        case FrogDirection.Direction.Down:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                        case FrogDirection.Direction.Left:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                        case FrogDirection.Direction.Right:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                    }
                 }
-            }
 
-            if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
-            {
-                switch (frogDirection.GetCurrentDirection())
+                if (e.KeyCode == Keys.Left || e.KeyCode == Keys.A)
                 {
-                    case FrogDirection.Direction.Up:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case FrogDirection.Direction.Down:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case FrogDirection.Direction.Right:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
+                    switch (frogDirection.GetCurrentDirection())
+                    {
+                        case FrogDirection.Direction.Up:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                        case FrogDirection.Direction.Down:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                        case FrogDirection.Direction.Right:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                    }
                 }
-            }
 
-            if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
-            {
-                switch (frogDirection.GetCurrentDirection())
+                if (e.KeyCode == Keys.Right || e.KeyCode == Keys.D)
                 {
-                    case FrogDirection.Direction.Up:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                        break;
-                    case FrogDirection.Direction.Down:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                        break;
-                    case FrogDirection.Direction.Left:
-                        _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                        break;
+                    switch (frogDirection.GetCurrentDirection())
+                    {
+                        case FrogDirection.Direction.Up:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                        case FrogDirection.Direction.Down:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                        case FrogDirection.Direction.Left:
+                            _playerFrog.BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                    }
                 }
-            }
 
-            _playerFrog.Refresh();
+                _playerFrog.Refresh();
+            }
         }
     }
 }

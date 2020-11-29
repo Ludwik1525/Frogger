@@ -10,6 +10,5 @@ namespace Frogger
     {
         Moving,
         NotMoving,
-        Over
     }
 }

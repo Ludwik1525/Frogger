@@ -14,16 +14,12 @@ namespace Frogger
 {
     public partial class GameManager : Form
     {
-        int enemySpeed = 3;
-        int leafSpeed = 2;
-
         int score = 100;
 
         bool onLeaf = false, wasDelayed = false;
 
-
-        PictureBox[] movableObjs = new PictureBox[35];
-        List<PictureBox> collectables = new List<PictureBox>();
+        MovableObj[] movableObjs = new MovableObj[35];
+        List<PictureBox> collectibles = new List<PictureBox>();
 
         int[] speeds = new int[35];
 
@@ -34,13 +30,11 @@ namespace Frogger
         {
             InitializeComponent();
             frog = new Frog(this.ClientSize.Width, this.ClientSize.Height, player);
-            
         }
 
         public void GameLoop()
         {
-            Console.WriteLine("game loop");
-            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 1000.0);
+            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
             Stopwatch stopWatch = Stopwatch.StartNew();
             TimeSpan previous = stopWatch.Elapsed;
             TimeSpan lag = new TimeSpan(0);
@@ -50,33 +44,32 @@ namespace Frogger
                 TimeSpan elapsed = current - previous;
                 previous = current;
                 lag += elapsed;
-
-                //Fixed timestep for logics, varying for rendering
+                
                 while (lag >= MS_PER_FRAME)
                 {
                     UpdateGameLogic();
 
                     lag -= MS_PER_FRAME;
                 }
-
-                //To utilize the GameLoop using Windows Forms, tell the application to do the events
-                // Refresh();
+                
                 Application.DoEvents();
             }
         }
 
-        private void ProcessInput(object sender, KeyEventArgs e)
-        {
-            //Input events here
-            frog.Rotate(e);
-            frog.ChangeDirection(e);
-            
-        }
-
         private void UpdateGameLogic()
         {
-            //Game Logic changes here
             frog.Move();
+
+            foreach (MovableObj obj in movableObjs)
+            {
+                obj.Move();
+            }
+        }
+
+        private void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            frog.Rotate(e);
+            frog.MoveTheFrog(e);
         }
 
         private void ScoreTimer_Tick(object sender, EventArgs e)
@@ -93,14 +86,13 @@ namespace Frogger
             }
         }
 
-        private void restartButton_Click(object sender, EventArgs e)
+        private void RestartButton(object sender, EventArgs e)
         {
             RestartGame();
         }
 
         private async void MainGameTimerEvent(object sender, EventArgs e)
         {
-
             foreach (Control x in this.Controls)
             {
                 if (x is PictureBox)
@@ -117,7 +109,6 @@ namespace Frogger
                         {
                             if (!onLeaf)
                             {
-                                Console.WriteLine("I'M ON A LEAF");
                                 onLeaf = true;
                                 wasDelayed = false;
                                 Wait();
@@ -129,7 +120,6 @@ namespace Frogger
                             {
                                 if (wasDelayed)
                                 {
-                                    Console.WriteLine("I'M NOT ON A LEAF");
                                     onLeaf = false;
                                 }
                             }
@@ -185,20 +175,6 @@ namespace Frogger
                     }
                 }
             }
-
-            for (int i = 0; i < movableObjs.Length; i++)
-            {
-                movableObjs[i].Left -= speeds[i];
-
-                if (movableObjs[i].Left + movableObjs[i].Width < 0)
-                {
-                    movableObjs[i].Left = this.ClientSize.Width;
-                }
-                if (movableObjs[i].Left > this.ClientSize.Width)
-                {
-                    movableObjs[i].Left = -movableObjs[i].Width;
-                }
-            }
         }
 
         private void Spawner_Tick(object sender, EventArgs e)
@@ -206,8 +182,6 @@ namespace Frogger
             Spawner.Start();
             SpawnCollectible();
         }
-
-
 
         private void RestartGame()
         {
@@ -220,7 +194,7 @@ namespace Frogger
 
             score = 100;
 
-            foreach (var c in collectables)
+            foreach (var c in collectibles)
             {
                 this.Controls.Remove(c);
             }
@@ -258,13 +232,13 @@ namespace Frogger
 
             this.Controls.Add(pictureBox);
             pictureBox.BringToFront();
-            collectables.Add(pictureBox);
+            collectibles.Add(pictureBox);
 
             await Task.Delay(7000);
             this.Controls.Remove(pictureBox);
         }
 
-        private void GameManager_Load(object sender, EventArgs e)
+        private void SpawnMovableObjs(object sender, EventArgs e)
         {
             int i = 0;
 
@@ -272,39 +246,14 @@ namespace Frogger
             {
                 if (x.Name.Contains("enemy") || x.Name.Contains("leaf"))
                 {
-                    movableObjs[i] = (PictureBox)x;
+                    if(i%2 == 0)
+                        movableObjs[i] = new MovableObj(this.ClientSize.Width, (PictureBox)x, 1);
+                    else
+                        movableObjs[i] = new MovableObj(this.ClientSize.Width, (PictureBox)x, -1);
+
                     i++;
                 }
             }
-
-            for (int j = 0; j < speeds.Length; j++)
-            {
-                if (j % 2 == 0)
-                {
-                    if ((string)movableObjs[j].Tag == "enemy")
-                    {
-                        speeds[j] = enemySpeed;
-                    }
-                    else
-                    {
-                        speeds[j] = leafSpeed;
-                    }
-                    movableObjs[j].BackgroundImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
-                    movableObjs[j].Refresh();
-                }
-                else
-                {
-                    if ((string)movableObjs[j].Tag == "enemy")
-                    {
-                        speeds[j] = -enemySpeed;
-                    }
-                    else
-                    {
-                        speeds[j] = -leafSpeed;
-                    }
-                }
-            }
-            
         }
 
         public async void Wait()

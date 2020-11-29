@@ -185,14 +185,14 @@
             this.restartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.restartButton.Font = new System.Drawing.Font("Impact", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.restartButton.Location = new System.Drawing.Point(366, 430);
-            this.restartButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.restartButton.Margin = new System.Windows.Forms.Padding(4);
             this.restartButton.Name = "restartButton";
             this.restartButton.Size = new System.Drawing.Size(152, 54);
             this.restartButton.TabIndex = 10;
             this.restartButton.Text = "Restart";
             this.restartButton.UseVisualStyleBackColor = false;
             this.restartButton.Visible = false;
-            this.restartButton.Click += new System.EventHandler(this.restartButton_Click);
+            this.restartButton.Click += new System.EventHandler(this.RestartButton);
             // 
             // Spawner
             // 
@@ -831,7 +831,7 @@
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox1.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.InitialImage")));
             this.pictureBox1.Location = new System.Drawing.Point(50, 11);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(43, 37);
             this.pictureBox1.TabIndex = 18;
@@ -842,7 +842,7 @@
             this.pictureBox2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.BackgroundImage")));
             this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBox2.Location = new System.Drawing.Point(216, 11);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(43, 37);
             this.pictureBox2.TabIndex = 18;
@@ -937,8 +937,8 @@
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "GameManager";
             this.Text = "Frogger";
-            this.Load += new System.EventHandler(this.GameManager_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProcessInput);
+            this.Load += new System.EventHandler(this.SpawnMovableObjs);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.borderRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.enemy1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.enemy3)).EndInit();
