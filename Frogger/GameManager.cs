@@ -16,6 +16,8 @@ namespace Frogger
     {
         int score = 100;
 
+        TimeSpan MS_PER_FRAME;
+
         bool onLeaf = false, wasDelayed = false;
 
         MovableObj[] movableObjs = new MovableObj[35];
@@ -34,7 +36,7 @@ namespace Frogger
 
         public void GameLoop()
         {
-            TimeSpan MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
+            MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
             Stopwatch stopWatch = Stopwatch.StartNew();
             TimeSpan previous = stopWatch.Elapsed;
             TimeSpan lag = new TimeSpan(0);
@@ -143,9 +145,9 @@ namespace Frogger
                         if (player.Bounds.IntersectsWith(x.Bounds))
                         {
                             this.Controls.Remove(x);
-                            gameTimer.Interval = 100;
+                            MS_PER_FRAME = TimeSpan.FromMilliseconds(2.0 / 60.0 * 10000.0);
                             await Task.Delay(4000);
-                            gameTimer.Interval = 20;
+                            MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
                         }
                     }
 
@@ -226,7 +228,7 @@ namespace Frogger
                 pictureBox.Tag = "addToScore";
             }
 
-            pictureBox.Location = new Point(random.Next(50, 400), random.Next(1, 8) * 53);
+            pictureBox.Location = new Point(random.Next(50, 400), random.Next(1, 9) * 53);
             pictureBox.Height = 30;
             pictureBox.Width = 20;
 
