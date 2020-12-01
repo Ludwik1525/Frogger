@@ -33,7 +33,6 @@
             this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.txtTimer = new System.Windows.Forms.Label();
             this.winLabel = new System.Windows.Forms.Label();
-            this.restartButton = new System.Windows.Forms.Button();
             this.SpawnerTimer = new System.Windows.Forms.Timer(this.components);
             this.enemy1 = new System.Windows.Forms.PictureBox();
             this.enemy3 = new System.Windows.Forms.PictureBox();
@@ -166,24 +165,10 @@
             this.winLabel.Location = new System.Drawing.Point(307, 304);
             this.winLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.winLabel.Name = "winLabel";
-            this.winLabel.Size = new System.Drawing.Size(266, 123);
+            this.winLabel.Size = new System.Drawing.Size(266, 198);
             this.winLabel.TabIndex = 9;
             this.winLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.winLabel.Visible = false;
-            // 
-            // restartButton
-            // 
-            this.restartButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
-            this.restartButton.Font = new System.Drawing.Font("Impact", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.restartButton.Location = new System.Drawing.Point(366, 430);
-            this.restartButton.Margin = new System.Windows.Forms.Padding(4);
-            this.restartButton.Name = "restartButton";
-            this.restartButton.Size = new System.Drawing.Size(152, 54);
-            this.restartButton.TabIndex = 10;
-            this.restartButton.Text = "Restart";
-            this.restartButton.UseVisualStyleBackColor = false;
-            this.restartButton.Visible = false;
-            this.restartButton.Click += new System.EventHandler(this.RestartButton);
             // 
             // SpawnerTimer
             // 
@@ -656,7 +641,7 @@
             this.waterLane4.Size = new System.Drawing.Size(930, 66);
             this.waterLane4.TabIndex = 1;
             this.waterLane4.TabStop = false;
-            this.waterLane4.Tag = "";
+            this.waterLane4.Tag = "water";
             // 
             // waterLane5
             // 
@@ -668,7 +653,7 @@
             this.waterLane5.Size = new System.Drawing.Size(930, 66);
             this.waterLane5.TabIndex = 2;
             this.waterLane5.TabStop = false;
-            this.waterLane5.Tag = "";
+            this.waterLane5.Tag = "water";
             // 
             // waterLane2
             // 
@@ -680,7 +665,7 @@
             this.waterLane2.Size = new System.Drawing.Size(930, 66);
             this.waterLane2.TabIndex = 3;
             this.waterLane2.TabStop = false;
-            this.waterLane2.Tag = "";
+            this.waterLane2.Tag = "water";
             // 
             // waterLane3
             // 
@@ -692,7 +677,7 @@
             this.waterLane3.Size = new System.Drawing.Size(930, 66);
             this.waterLane3.TabIndex = 0;
             this.waterLane3.TabStop = false;
-            this.waterLane3.Tag = "";
+            this.waterLane3.Tag = "water";
             // 
             // roadLane1
             // 
@@ -808,7 +793,7 @@
             this.waterLane1.Size = new System.Drawing.Size(930, 66);
             this.waterLane1.TabIndex = 4;
             this.waterLane1.TabStop = false;
-            this.waterLane1.Tag = "";
+            this.waterLane1.Tag = "water";
             // 
             // pictureBox1
             // 
@@ -864,7 +849,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(255)))), ((int)(((byte)(204)))));
             this.ClientSize = new System.Drawing.Size(908, 754);
-            this.Controls.Add(this.restartButton);
             this.Controls.Add(this.winLabel);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -1015,7 +999,6 @@
         private System.Windows.Forms.PictureBox enemy14;
         private System.Windows.Forms.Label txtTimer;
         private System.Windows.Forms.Label winLabel;
-        private System.Windows.Forms.Button restartButton;
         private System.Windows.Forms.Timer SpawnerTimer;
         private System.Windows.Forms.PictureBox roadLane4;
         private System.Windows.Forms.PictureBox roadLane3;

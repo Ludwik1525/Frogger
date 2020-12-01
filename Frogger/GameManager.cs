@@ -80,8 +80,15 @@ namespace Frogger
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            frog.Rotate(e);
-            frog.MoveTheFrog(e);
+            if(e.KeyCode == Keys.Escape)
+            {
+                RestartGame();
+            }
+            else
+            {
+                frog.Rotate(e);
+                frog.MoveTheFrog(e);
+            }
         }
 
         private async void MainGameTimerEvent(object sender, EventArgs e)
@@ -138,10 +145,9 @@ namespace Frogger
 
                             winLabel.Visible = true;
                             winLabel.BringToFront();
-                            restartButton.Visible = true;
-                            restartButton.BringToFront();
 
-                            winLabel.Text += "You won!" + Environment.NewLine + "Score: " + String.Format("{0:0.00}", score);
+                            winLabel.Text = "You won!" + Environment.NewLine + "Score: " + String.Format("{0:0.00}", score)
+                                + Environment.NewLine + "Press [ESC] to restart.";
                         }
                     }
                 }
@@ -210,7 +216,6 @@ namespace Frogger
         private void RestartGame()
         {
             winLabel.Visible = false;
-            restartButton.Visible = false;
 
             player.Left = this.ClientSize.Width / 2;
             player.Top = this.ClientSize.Height - 33;
