@@ -30,12 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameManager));
-            this.gameTimer = new System.Windows.Forms.Timer(this.components);
+            this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.txtTimer = new System.Windows.Forms.Label();
-            this.ScoreTimer = new System.Windows.Forms.Timer(this.components);
             this.winLabel = new System.Windows.Forms.Label();
             this.restartButton = new System.Windows.Forms.Button();
-            this.Spawner = new System.Windows.Forms.Timer(this.components);
+            this.SpawnerTimer = new System.Windows.Forms.Timer(this.components);
             this.enemy1 = new System.Windows.Forms.PictureBox();
             this.enemy3 = new System.Windows.Forms.PictureBox();
             this.enemy2 = new System.Windows.Forms.PictureBox();
@@ -140,11 +139,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
-            // gameTimer
+            // GameTimer
             // 
-            this.gameTimer.Enabled = true;
-            this.gameTimer.Interval = 20;
-            this.gameTimer.Tick += new System.EventHandler(this.MainGameTimerEvent);
+            this.GameTimer.Enabled = true;
+            this.GameTimer.Interval = 20;
+            this.GameTimer.Tick += new System.EventHandler(this.MainGameTimerEvent);
             // 
             // txtTimer
             // 
@@ -158,11 +157,6 @@
             this.txtTimer.TabIndex = 8;
             this.txtTimer.Text = "Score: 100.00";
             this.txtTimer.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // ScoreTimer
-            // 
-            this.ScoreTimer.Enabled = true;
-            this.ScoreTimer.Interval = 1000;
             // 
             // winLabel
             // 
@@ -191,11 +185,11 @@
             this.restartButton.Visible = false;
             this.restartButton.Click += new System.EventHandler(this.RestartButton);
             // 
-            // Spawner
+            // SpawnerTimer
             // 
-            this.Spawner.Enabled = true;
-            this.Spawner.Interval = 4000;
-            this.Spawner.Tick += new System.EventHandler(this.SpawnCollectible);
+            this.SpawnerTimer.Enabled = true;
+            this.SpawnerTimer.Interval = 4000;
+            this.SpawnerTimer.Tick += new System.EventHandler(this.SpawnCollectible);
             // 
             // enemy1
             // 
@@ -662,7 +656,7 @@
             this.waterLane4.Size = new System.Drawing.Size(930, 66);
             this.waterLane4.TabIndex = 1;
             this.waterLane4.TabStop = false;
-            this.waterLane4.Tag = "leaf";
+            this.waterLane4.Tag = "";
             // 
             // waterLane5
             // 
@@ -674,7 +668,7 @@
             this.waterLane5.Size = new System.Drawing.Size(930, 66);
             this.waterLane5.TabIndex = 2;
             this.waterLane5.TabStop = false;
-            this.waterLane5.Tag = "leaf";
+            this.waterLane5.Tag = "";
             // 
             // waterLane2
             // 
@@ -686,7 +680,7 @@
             this.waterLane2.Size = new System.Drawing.Size(930, 66);
             this.waterLane2.TabIndex = 3;
             this.waterLane2.TabStop = false;
-            this.waterLane2.Tag = "leaf";
+            this.waterLane2.Tag = "";
             // 
             // waterLane3
             // 
@@ -698,7 +692,7 @@
             this.waterLane3.Size = new System.Drawing.Size(930, 66);
             this.waterLane3.TabIndex = 0;
             this.waterLane3.TabStop = false;
-            this.waterLane3.Tag = "leaf";
+            this.waterLane3.Tag = "";
             // 
             // roadLane1
             // 
@@ -814,7 +808,7 @@
             this.waterLane1.Size = new System.Drawing.Size(930, 66);
             this.waterLane1.TabIndex = 4;
             this.waterLane1.TabStop = false;
-            this.waterLane1.Tag = "leaf";
+            this.waterLane1.Tag = "";
             // 
             // pictureBox1
             // 
@@ -996,7 +990,7 @@
         private System.Windows.Forms.PictureBox player;
         private System.Windows.Forms.PictureBox finishLine;
         private System.Windows.Forms.PictureBox enemy1;
-        private System.Windows.Forms.Timer gameTimer;
+        private System.Windows.Forms.Timer GameTimer;
         private System.Windows.Forms.PictureBox enemy2;
         private System.Windows.Forms.PictureBox enemy3;
         private System.Windows.Forms.PictureBox enemy5;
@@ -1020,10 +1014,9 @@
         private System.Windows.Forms.PictureBox enemy17;
         private System.Windows.Forms.PictureBox enemy14;
         private System.Windows.Forms.Label txtTimer;
-        private System.Windows.Forms.Timer ScoreTimer;
         private System.Windows.Forms.Label winLabel;
         private System.Windows.Forms.Button restartButton;
-        private System.Windows.Forms.Timer Spawner;
+        private System.Windows.Forms.Timer SpawnerTimer;
         private System.Windows.Forms.PictureBox roadLane4;
         private System.Windows.Forms.PictureBox roadLane3;
         private System.Windows.Forms.PictureBox roadLane2;

@@ -16,9 +16,9 @@ namespace Frogger
     {
         double score = 100.0;
 
-        TimeSpan MS_PER_FRAME;
+        bool onLeaf = false, isGameFinished = false;
 
-        bool onLeaf = false, wasDelayed = false;
+        TimeSpan MS_PER_FRAME;
 
         MovableObj[] movableObjs = new MovableObj[35];
         List<PictureBox> collectibles = new List<PictureBox>();
@@ -58,19 +58,22 @@ namespace Frogger
 
         private void UpdateGameLogic()
         {
-            frog.Move();
-
-            foreach (MovableObj obj in movableObjs)
+            if (!isGameFinished)
             {
-                obj.Move();
-            }
+                frog.Move();
 
-            if (gameTimer.Enabled)
-            {
-                if (score > 0.1)
+                foreach (MovableObj obj in movableObjs)
                 {
-                    score -= 0.1;
-                    txtTimer.Text = "Score: " + String.Format("{0:0.00}", score);
+                    obj.Move();
+                }
+
+                if (GameTimer.Enabled)
+                {
+                    if (score > 0.1)
+                    {
+                        score -= 0.1;
+                        txtTimer.Text = "Score: " + String.Format("{0:0.00}", score);
+                    }
                 }
             }
         }
@@ -83,6 +86,8 @@ namespace Frogger
 
         private async void MainGameTimerEvent(object sender, EventArgs e)
         {
+            onLeaf = false;
+
             foreach (Control x in this.Controls)
             {
                 if (x is PictureBox)
@@ -91,7 +96,6 @@ namespace Frogger
                     {
                         if ((string)x.Tag == "enemy")
                         {
-                            if (player.Bounds.IntersectsWith(x.Bounds))
                                 RestartGame();
                         }
 
@@ -100,21 +104,12 @@ namespace Frogger
                             if (!onLeaf)
                             {
                                 onLeaf = true;
-                                wasDelayed = false;
-                                Wait();
-                            }
-                            else
-                            {
-                                if (wasDelayed)
-                                {
-                                    onLeaf = false;
-                                }
                             }
                         }
 
-                        if (!onLeaf)
+                        if ((string)x.Tag == "water")
                         {
-                            if ((string)x.Tag == "water")
+                            if (!onLeaf)
                             {
                                 RestartGame();
                             }
@@ -136,8 +131,10 @@ namespace Frogger
 
                         if (x.Name == "finishLine")
                         {
-                            gameTimer.Stop();
-                            Spawner.Stop();
+                            isGameFinished = true;
+
+                            GameTimer.Stop();
+                            SpawnerTimer.Stop();
 
                             winLabel.Visible = true;
                             winLabel.BringToFront();
@@ -186,14 +183,14 @@ namespace Frogger
 
         private void SetupBoard(object sender, EventArgs e)
         {
-            gameTimer.Start();
-            Spawner.Start();
+            GameTimer.Start();
+            SpawnerTimer.Start();
 
             int i = 0;
 
             foreach (Control x in this.Controls)
             {
-                if (x.Name.Contains("enemy") || x.Name.Contains("leaf"))
+                if ((string)x.Tag == "enemy" || (string)x.Tag == "leaf")
                 {
                     if(i%2 == 0)
                         movableObjs[i] = new MovableObj(this.ClientSize.Width, (PictureBox)x, 1);
@@ -203,12 +200,6 @@ namespace Frogger
                     i++;
                 }
             }
-        }
-
-        public async void Wait()
-        {
-            await Task.Delay(500);
-            wasDelayed = true;
         }
 
         private void RestartButton(object sender, EventArgs e)
@@ -231,9 +222,12 @@ namespace Frogger
                 this.Controls.Remove(c);
             }
 
-            Spawner.Start();
-            gameTimer.Start();
-        }
 
+            if (isGameFinished)
+                isGameFinished = false;
+
+            SpawnerTimer.Start();
+            GameTimer.Start();
+        }
     }
 }
