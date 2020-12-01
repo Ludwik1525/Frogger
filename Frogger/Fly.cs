@@ -21,8 +21,6 @@ namespace Frogger
         {
             return this.collectible;
         }
-
-
         private void SetImage()
         {
             collectible.ImageLocation = "../../Resources/Fly.png";

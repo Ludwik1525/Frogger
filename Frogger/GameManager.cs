@@ -16,7 +16,6 @@ namespace Frogger
         TimeSpan MS_PER_FRAME;
 
         MovableObj[] movableObjs = new MovableObj[35];
-        List<PictureBox> collectibles = new List<PictureBox>();
         ObjectPool<Fly> FlyObjectPool = new ObjectPool<Fly>();
         ObjectPool<Worm> WormObjectPool = new ObjectPool<Worm>();
 
@@ -168,7 +167,6 @@ namespace Frogger
 
                 this.Controls.Add(fly);
                 fly.BringToFront();
-                collectibles.Add(fly);
 
                 await Task.Delay(7000);
                 this.Controls.Remove(fly);
@@ -179,18 +177,14 @@ namespace Frogger
                 WormObjectPool.Release(obj);
                 obj.SetPosition();
 
-
                 var worm = obj.GetWorm();
 
                 this.Controls.Add(worm);
                 worm.BringToFront();
-                collectibles.Add(worm);
 
                 await Task.Delay(7000);
                 this.Controls.Remove(worm);
             }
-
-            
         }
 
         private void SetupBoard(object sender, EventArgs e)
@@ -222,11 +216,6 @@ namespace Frogger
             player.Top = this.ClientSize.Height - 33;
 
             score = 100.0;
-
-            foreach (var c in collectibles)
-            {
-                this.Controls.Remove(c);
-            }
 
             if (isGameFinished)
                 isGameFinished = false;
