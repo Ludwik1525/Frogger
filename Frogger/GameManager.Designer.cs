@@ -195,7 +195,7 @@
             // 
             this.Spawner.Enabled = true;
             this.Spawner.Interval = 4000;
-            this.Spawner.Tick += new System.EventHandler(this.Spawner_Tick);
+            this.Spawner.Tick += new System.EventHandler(this.SpawnCollectible);
             // 
             // enemy1
             // 

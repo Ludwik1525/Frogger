@@ -65,7 +65,7 @@ namespace Frogger
                 obj.Move();
             }
 
-            if (ScoreTimer.Enabled)
+            if (gameTimer.Enabled)
             {
                 if (score > 0.1)
                 {
@@ -87,15 +87,15 @@ namespace Frogger
             {
                 if (x is PictureBox)
                 {
-                    if ((string)x.Tag == "enemy")
+                    if (player.Bounds.IntersectsWith(x.Bounds))
                     {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                            RestartGame();
-                    }
+                        if ((string)x.Tag == "enemy")
+                        {
+                            if (player.Bounds.IntersectsWith(x.Bounds))
+                                RestartGame();
+                        }
 
-                    if ((string)x.Tag == "leaf" || (string)x.Tag == "ground")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        if ((string)x.Tag == "leaf" || (string)x.Tag == "ground")
                         {
                             if (!onLeaf)
                             {
@@ -103,10 +103,7 @@ namespace Frogger
                                 wasDelayed = false;
                                 Wait();
                             }
-                        }
-                        else
-                        {
-                            if (onLeaf)
+                            else
                             {
                                 if (wasDelayed)
                                 {
@@ -114,50 +111,38 @@ namespace Frogger
                                 }
                             }
                         }
-                    }
 
-                    if (!onLeaf)
-                    {
-                        if ((string)x.Tag == "water")
+                        if (!onLeaf)
                         {
-                            if (player.Bounds.IntersectsWith(x.Bounds))
+                            if ((string)x.Tag == "water")
                             {
                                 RestartGame();
                             }
                         }
-                    }
 
-
-                    if ((string)x.Tag == "slowTime")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        if ((string)x.Tag == "slowTime")
                         {
                             this.Controls.Remove(x);
                             MS_PER_FRAME = TimeSpan.FromMilliseconds(2.0 / 60.0 * 10000.0);
                             await Task.Delay(4000);
                             MS_PER_FRAME = TimeSpan.FromMilliseconds(1.0 / 60.0 * 10000.0);
                         }
-                    }
 
-                    if ((string)x.Tag == "addToScore")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        if ((string)x.Tag == "addToScore")
                         {
                             this.Controls.Remove(x);
                             score += 5;
                         }
-                    }
 
-                    if (x.Name == "finishLine")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        if (x.Name == "finishLine")
                         {
                             gameTimer.Stop();
-                            ScoreTimer.Stop();
                             Spawner.Stop();
-                            
+
                             winLabel.Visible = true;
+                            winLabel.BringToFront();
                             restartButton.Visible = true;
+                            restartButton.BringToFront();
 
                             winLabel.Text += "You won!" + Environment.NewLine + "Score: " + String.Format("{0:0.00}", score);
                         }
@@ -166,33 +151,7 @@ namespace Frogger
             }
         }
 
-        private void Spawner_Tick(object sender, EventArgs e)
-        {
-            Spawner.Start();
-            SpawnCollectible();
-        }
-
-        private void RestartGame()
-        {
-            winLabel.Visible = false;
-            restartButton.Visible = false;
-
-            player.Left = this.ClientSize.Width / 2;
-            player.Top = this.ClientSize.Height - 33;
-
-            score = 100.0;
-
-            foreach (var c in collectibles)
-            {
-                this.Controls.Remove(c);
-            }
-            
-            Spawner.Start();
-            ScoreTimer.Start();
-            gameTimer.Start();
-        }
-
-        private async void SpawnCollectible()
+        private async void SpawnCollectible(object sender, EventArgs e)
         {
             Random random = new Random();
 
@@ -227,7 +186,8 @@ namespace Frogger
 
         private void SetupBoard(object sender, EventArgs e)
         {
-            ScoreTimer.Start();
+            gameTimer.Start();
+            Spawner.Start();
 
             int i = 0;
 
@@ -254,6 +214,25 @@ namespace Frogger
         private void RestartButton(object sender, EventArgs e)
         {
             RestartGame();
+        }
+
+        private void RestartGame()
+        {
+            winLabel.Visible = false;
+            restartButton.Visible = false;
+
+            player.Left = this.ClientSize.Width / 2;
+            player.Top = this.ClientSize.Height - 33;
+
+            score = 100.0;
+
+            foreach (var c in collectibles)
+            {
+                this.Controls.Remove(c);
+            }
+
+            Spawner.Start();
+            gameTimer.Start();
         }
 
     }
