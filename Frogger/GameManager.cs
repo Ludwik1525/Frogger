@@ -14,7 +14,7 @@ namespace Frogger
 {
     public partial class GameManager : Form
     {
-        int score = 100;
+        double score = 100.0;
 
         TimeSpan MS_PER_FRAME;
 
@@ -22,8 +22,6 @@ namespace Frogger
 
         MovableObj[] movableObjs = new MovableObj[35];
         List<PictureBox> collectibles = new List<PictureBox>();
-
-        int[] speeds = new int[35];
 
         Frog frog;
 
@@ -66,31 +64,21 @@ namespace Frogger
             {
                 obj.Move();
             }
+
+            if (ScoreTimer.Enabled)
+            {
+                if (score > 0.1)
+                {
+                    score -= 0.1;
+                    txtTimer.Text = "Score: " + String.Format("{0:0.00}", score);
+                }
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             frog.Rotate(e);
             frog.MoveTheFrog(e);
-        }
-
-        private void ScoreTimer_Tick(object sender, EventArgs e)
-        {
-            ScoreTimer.Start();
-            if (score > 1)
-            {
-                score--;
-                txtTimer.Text = "Score: " + score.ToString();
-            }
-            else
-            {
-                RestartGame();
-            }
-        }
-
-        private void RestartButton(object sender, EventArgs e)
-        {
-            RestartGame();
         }
 
         private async void MainGameTimerEvent(object sender, EventArgs e)
@@ -105,7 +93,7 @@ namespace Frogger
                             RestartGame();
                     }
 
-                    if ((string)x.Tag == "leaf")
+                    if ((string)x.Tag == "leaf" || (string)x.Tag == "ground")
                     {
                         if (player.Bounds.IntersectsWith(x.Bounds))
                         {
@@ -167,12 +155,11 @@ namespace Frogger
                             gameTimer.Stop();
                             ScoreTimer.Stop();
                             Spawner.Stop();
-
-                            player.Visible = false;
+                            
                             winLabel.Visible = true;
                             restartButton.Visible = true;
 
-                            winLabel.Text += "You won!" + Environment.NewLine + "Score: " + score;
+                            winLabel.Text += "You won!" + Environment.NewLine + "Score: " + String.Format("{0:0.00}", score);
                         }
                     }
                 }
@@ -189,19 +176,17 @@ namespace Frogger
         {
             winLabel.Visible = false;
             restartButton.Visible = false;
-            player.Visible = true;
 
             player.Left = this.ClientSize.Width / 2;
             player.Top = this.ClientSize.Height - 33;
 
-            score = 100;
+            score = 100.0;
 
             foreach (var c in collectibles)
             {
                 this.Controls.Remove(c);
             }
-
-            gameTimer.Interval = 20;
+            
             Spawner.Start();
             ScoreTimer.Start();
             gameTimer.Start();
@@ -213,35 +198,37 @@ namespace Frogger
 
             int randomNum = random.Next(0, 2);
 
-            PictureBox pictureBox = new PictureBox();
+            PictureBox collectible = new PictureBox();
 
             if (randomNum == 0)
             {
-                pictureBox.ImageLocation = "../../Resources/Fly.png";
-                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-                pictureBox.Tag = "slowTime";
+                collectible.ImageLocation = "../../Resources/Fly.png";
+                collectible.SizeMode = PictureBoxSizeMode.AutoSize;
+                collectible.Tag = "slowTime";
             }
             else
             {
-                pictureBox.ImageLocation = "../../Resources/Worm.png";
-                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
-                pictureBox.Tag = "addToScore";
+                collectible.ImageLocation = "../../Resources/Worm.png";
+                collectible.SizeMode = PictureBoxSizeMode.AutoSize;
+                collectible.Tag = "addToScore";
             }
 
-            pictureBox.Location = new Point(random.Next(50, 400), random.Next(1, 9) * 53);
-            pictureBox.Height = 30;
-            pictureBox.Width = 20;
+            collectible.Location = new Point(random.Next(50, 400), random.Next(1, 9) * 53);
+            collectible.Height = 30;
+            collectible.Width = 20;
 
-            this.Controls.Add(pictureBox);
-            pictureBox.BringToFront();
-            collectibles.Add(pictureBox);
+            this.Controls.Add(collectible);
+            collectible.BringToFront();
+            collectibles.Add(collectible);
 
             await Task.Delay(7000);
-            this.Controls.Remove(pictureBox);
+            this.Controls.Remove(collectible);
         }
 
-        private void SpawnMovableObjs(object sender, EventArgs e)
+        private void SetupBoard(object sender, EventArgs e)
         {
+            ScoreTimer.Start();
+
             int i = 0;
 
             foreach (Control x in this.Controls)
@@ -262,6 +249,11 @@ namespace Frogger
         {
             await Task.Delay(500);
             wasDelayed = true;
+        }
+
+        private void RestartButton(object sender, EventArgs e)
+        {
+            RestartGame();
         }
 
     }
