@@ -17,9 +17,10 @@ namespace Frogger
 
         MovableObj[] movableObjs = new MovableObj[35];
         List<PictureBox> collectibles = new List<PictureBox>();
+        ObjectPool<Fly> FlyObjectPool = new ObjectPool<Fly>();
+        ObjectPool<Worm> WormObjectPool = new ObjectPool<Worm>();
 
         Frog frog;
-
 
         public GameManager()
         {
@@ -71,6 +72,8 @@ namespace Frogger
                     }
                 }
             }
+
+            
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -155,31 +158,39 @@ namespace Frogger
 
             int randomNum = random.Next(0, 2);
 
-            PictureBox collectible = new PictureBox();
-
             if (randomNum == 0)
             {
-                collectible.ImageLocation = "../../Resources/Fly.png";
-                collectible.SizeMode = PictureBoxSizeMode.AutoSize;
-                collectible.Tag = "slowTime";
+                Fly obj = FlyObjectPool.Get();
+                FlyObjectPool.Release(obj);
+
+                obj.SetPosition();
+                var fly = obj.GetFly();
+
+                this.Controls.Add(fly);
+                fly.BringToFront();
+                collectibles.Add(fly);
+
+                await Task.Delay(7000);
+                this.Controls.Remove(fly);
             }
             else
             {
-                collectible.ImageLocation = "../../Resources/Worm.png";
-                collectible.SizeMode = PictureBoxSizeMode.AutoSize;
-                collectible.Tag = "addToScore";
+                Worm obj = WormObjectPool.Get();
+                WormObjectPool.Release(obj);
+                obj.SetPosition();
+
+
+                var worm = obj.GetWorm();
+
+                this.Controls.Add(worm);
+                worm.BringToFront();
+                collectibles.Add(worm);
+
+                await Task.Delay(7000);
+                this.Controls.Remove(worm);
             }
 
-            collectible.Location = new Point(random.Next(50, 400), random.Next(1, 9) * 53);
-            collectible.Height = 30;
-            collectible.Width = 20;
-
-            this.Controls.Add(collectible);
-            collectible.BringToFront();
-            collectibles.Add(collectible);
-
-            await Task.Delay(7000);
-            this.Controls.Remove(collectible);
+            
         }
 
         private void SetupBoard(object sender, EventArgs e)
@@ -216,7 +227,6 @@ namespace Frogger
             {
                 this.Controls.Remove(c);
             }
-
 
             if (isGameFinished)
                 isGameFinished = false;
